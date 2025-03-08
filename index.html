@@ -36,6 +36,30 @@
             text-transform: uppercase;
             font-weight: bold;
         }
+        .email-form {
+            margin-top: 20px;
+        }
+        input[type="email"] {
+            padding: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            width: 250px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            background: #ffcc00;
+            color: #121212;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #e6b800;
+        }
     </style>
 </head>
 <body>
@@ -43,5 +67,10 @@
     <h1>MemeMinter.fun</h1>
     <p>The future of meme coins starts here! We are launching soon 🚀</p>
     <div class="coming-soon">Coming Soon</div>
+    
+    <form class="email-form">
+        <input type="email" placeholder="Enter your email" required>
+        <button type="submit">Notify Me</button>
+    </form>
 </body>
 </html>
