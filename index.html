@@ -73,11 +73,22 @@
         <button type="submit">Notify Me</button>
         
     </form>
-    function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var data = JSON.parse(e.postData.contents);
-  sheet.appendRow([data.email]);
-  return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
-}
+    <script>
+document.querySelector(".email-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+    var email = document.querySelector("input[type='email']").value;
+    
+    fetch("YOUR_WEBHOOK_URL_HERE", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email: email })
+    })
+    .then(response => response.text())
+    .then(data => alert("You have been subscribed!"))
+    .catch(error => console.error("Error:", error));
+});
+</script>
 </body>
 </html>
