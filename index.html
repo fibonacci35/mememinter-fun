@@ -4,6 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MemeMinter.fun - Coming Soon</title>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js"></script>
+    <script>
+        // 📌 Firebase Bağlantısı (Senin Firebase Bilgilerin)
+        const firebaseConfig = {
+            apiKey: "AIzaSyB31pt2z17AUJtlGcUK5-rP7-ww6foorII",
+            authDomain: "mememinter-e98a2.firebaseapp.com",
+            projectId: "mememinter-e98a2",
+            storageBucket: "mememinter-e98a2.firebasestorage.app",
+            messagingSenderId: "183147534016",
+            appId: "1:183147534016:web:cf24b03fe697a1ddf57f25",
+            measurementId: "G-964WYC37KZ"
+        };
+
+        // Firebase'i başlat
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function saveEmail(event) {
+            event.preventDefault();
+            const email = document.querySelector("input[type='email']").value;
+
+            if (email) {
+                db.collection("emails").add({ email: email })
+                .then(() => {
+                    alert("You have been subscribed!");
+                    document.querySelector("input[type='email']").value = "";
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("An error occurred!");
+                });
+            } else {
+                alert("Please enter a valid email.");
+            }
+        }
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,10 +59,6 @@
         }
         p {
             font-size: 1.5rem;
-        }
-        .logo {
-            width: 150px;
-            margin-bottom: 20px;
         }
         .coming-soon {
             background: #ffcc00;
@@ -63,12 +96,11 @@
     </style>
 </head>
 <body>
-    <img src="logo.png" alt="MemeMinter Logo" class="logo">
     <h1>MemeMinter.fun</h1>
     <p>The future of meme coins starts here! We are launching soon 🚀</p>
     <div class="coming-soon">Coming Soon</div>
-    
-    <form action="https://docs.google.com/forms/d/e/1FAIpQLSdvw43o6AVCCwIQ66NmeT-OrOk-JJU_Ke0KspeIu_8tSda4iQ/viewform" method="GET" target="_blank">
+
+    <form class="email-form" onsubmit="saveEmail(event)">
         <input type="email" placeholder="Enter your email" required>
         <button type="submit">Notify Me</button>
     </form>
