@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MemeMinter.fun - Coming Soon</title>
 
+    <!-- Firebase Modülleri -->
     <script type="module">
-        // Firebase modüllerini içe aktar
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-        // 📌 Firebase Bağlantısı (Senin Firebase Bilgilerin)
+        // 📌 Firebase Yapılandırması (Senin Firebase Bilgilerin)
         const firebaseConfig = {
             apiKey: "AIzaSyB31pt2z17AUJtlGcUK5-rP7-ww6foorII",
             authDomain: "mememinter-e98a2.firebaseapp.com",
@@ -21,11 +21,11 @@
             measurementId: "G-964WYC37KZ"
         };
 
-        // Firebase'i başlat
+        // Firebase'i Başlat
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // E-posta kaydetme fonksiyonu
+        // E-posta Kaydetme Fonksiyonu
         window.saveEmail = async (event) => {
             event.preventDefault();
             const email = document.querySelector("input[type='email']").value;
@@ -64,6 +64,10 @@
         p {
             font-size: 1.5rem;
         }
+        .logo {
+            width: 180px;
+            margin-bottom: 20px;
+        }
         .coming-soon {
             background: #ffcc00;
             color: #121212;
@@ -100,14 +104,17 @@
     </style>
 </head>
 <body>
+    <!-- 📌 LOGO -->
+    <img src="logo.png" alt="MemeMinter Logo" class="logo" onerror="this.onerror=null; this.src='default-logo.png';">
+
     <h1>MemeMinter.fun</h1>
     <p>The future of meme coins starts here! We are launching soon 🚀</p>
     <div class="coming-soon">Coming Soon</div>
 
+    <!-- 📌 E-Posta Abonelik Formu -->
     <form class="email-form" onsubmit="saveEmail(event)">
         <input type="email" placeholder="Enter your email" required>
         <button type="submit">Notify Me</button>
     </form>
-    <img src="FIREBASE_LOGO_URL" alt="MemeMinter Logo" class="logo">
 </body>
 </html>
