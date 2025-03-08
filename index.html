@@ -71,98 +71,6 @@
     <form class="email-form">
         <input type="email" placeholder="Enter your email" required>
         <button type="submit">Notify Me</button>
-        
-    </form>
-    <script>
-document.querySelector(".email-form").addEventListener("submit", function(event) {
-    event.preventDefault();
-    var email = document.querySelector("input[type='email']").value;
-    
-    fetch("YOUR_WEBHOOK_URL_HERE", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email: email })
-    })
-    .then(response => response.text())
-    .then(data => alert("You have been subscribed!"))
-    .catch(error => console.error("Error:", error));
-});
-</script>
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MemeMinter.fun - Coming Soon</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #121212;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        h1 {
-            font-size: 3rem;
-        }
-        p {
-            font-size: 1.5rem;
-        }
-        .logo {
-            width: 150px;
-            margin-bottom: 20px;
-        }
-        .coming-soon {
-            background: #ffcc00;
-            color: #121212;
-            padding: 10px 20px;
-            font-size: 1.2rem;
-            border-radius: 5px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-        .email-form {
-            margin-top: 20px;
-        }
-        input[type="email"] {
-            padding: 10px;
-            font-size: 1rem;
-            border: none;
-            border-radius: 5px;
-            margin-right: 10px;
-            width: 250px;
-        }
-        button {
-            padding: 10px 15px;
-            font-size: 1rem;
-            border: none;
-            border-radius: 5px;
-            background: #ffcc00;
-            color: #121212;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        button:hover {
-            background: #e6b800;
-        }
-    </style>
-</head>
-<body>
-    <img src="logo.png" alt="MemeMinter Logo" class="logo">
-    <h1>MemeMinter.fun</h1>
-    <p>The future of meme coins starts here! We are launching soon 🚀</p>
-    <div class="coming-soon">Coming Soon</div>
-    
-    <form class="email-form">
-        <input type="email" placeholder="Enter your email" required>
-        <button type="submit">Notify Me</button>
     </form>
 
     <script>
@@ -170,7 +78,7 @@ document.querySelector(".email-form").addEventListener("submit", function(event)
             event.preventDefault();
             var email = document.querySelector("input[type='email']").value;
 
-            fetch("https://script.google.com/u/0/home/projects/1yOgLUiM-dF-jfiQ2SQyySOcs2ARD4gRC2RgBij7heP7V8Y8l4nb68QQk/edit", {
+            fetch("YOUR_WEBHOOK_URL_HERE", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -182,7 +90,5 @@ document.querySelector(".email-form").addEventListener("submit", function(event)
             .catch(error => console.error("Error:", error));
         });
     </script>
-</body>
-</html>
 </body>
 </html>
