@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mint Your Meme Coin - MemeMinter.fun</title>
     <script type="module">
+        import { v4 as uuidv4 } from "https://cdn.jsdelivr.net/npm/uuid@8.3.2/+esm";
         import { Connection, PublicKey, Transaction, SystemProgram, sendAndConfirmTransaction } from "https://cdn.jsdelivr.net/npm/@solana/web3.js/+esm";
 
         let walletAddress = null;
@@ -39,6 +40,9 @@
             alert("🚀 Minting Token... (This may take a few seconds)");
 
             try {
+                const transactionId = uuidv4();
+                console.log("Generated UUID for transaction:", transactionId);
+
                 // Example: Send 0.01 SOL to test the transaction (replace with mint logic)
                 const transaction = new Transaction().add(
                     SystemProgram.transfer({
@@ -161,4 +165,3 @@
     </div>
 </body>
 </html>
-
