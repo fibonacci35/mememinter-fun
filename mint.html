@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mint Your Meme Coin - MemeMinter.fun</title>
+    
+    <!-- Solana Web3.js ve Buffer Polyfill -->
     <script defer src="https://unpkg.com/@solana/web3.js@1.76.0/lib/index.iife.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/buffer/6.0.3/buffer.min.js"></script>
+
     <script defer>
+        window.Buffer = window.Buffer || buffer.Buffer; // Buffer'ı tanımla
+
         let walletAddress = null;
         let connection;
 
@@ -45,7 +51,7 @@
             alert("🚀 Minting Token... Please approve the transaction in Phantom Wallet.");
 
             try {
-                const lamports = Number(1000000); // 0.01 SOL (Test için)
+                const lamports = 1000000; // 0.01 SOL (Test için)
 
                 const transaction = new solanaWeb3.Transaction().add(
                     solanaWeb3.SystemProgram.transfer({
@@ -56,7 +62,7 @@
                 );
 
                 console.log("⏳ Sending transaction...");
-                const { signature } = await window.solana.signAndSendTransaction(transaction);
+                const signature = await window.solana.signAndSendTransaction(transaction);
                 console.log("✅ Transaction Signature:", signature);
 
                 await connection.confirmTransaction(signature, "confirmed");
@@ -74,6 +80,7 @@
             window.mintToken = mintToken;
         };
     </script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
