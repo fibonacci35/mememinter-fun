@@ -10,26 +10,27 @@
         let walletAddress = null; // Değişken sadece bir kez tanımlandı ✅
         const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 
-        window.connectWallet = async function() {
+        function connectWallet() {
             if (window.solana && window.solana.isPhantom) {
-                try {
-                    const response = await window.solana.connect();
-                    walletAddress = response.publicKey.toString();
-                    document.getElementById("wallet-status").innerText = `Connected: ${walletAddress}`;
-                } catch (err) {
-                    if (err.message.includes("User rejected the request")) {
-                        alert("❌ Wallet connection was rejected. Please try again.");
-                    } else {
-                        alert("❌ Wallet connection failed. Check console for details.");
-                        console.error("Wallet connection failed", err);
-                    }
-                }
+                window.solana.connect()
+                    .then(response => {
+                        walletAddress = response.publicKey.toString();
+                        document.getElementById("wallet-status").innerText = `Connected: ${walletAddress}`;
+                    })
+                    .catch(err => {
+                        if (err.message.includes("User rejected the request")) {
+                            alert("❌ Wallet connection was rejected. Please try again.");
+                        } else {
+                            alert("❌ Wallet connection failed. Check console for details.");
+                            console.error("Wallet connection failed", err);
+                        }
+                    });
             } else {
                 alert("❌ Please install Phantom Wallet.");
             }
         }
 
-        window.mintToken = async function(event) {
+        function mintToken(event) {
             event.preventDefault();
 
             if (!walletAddress) {
@@ -39,24 +40,30 @@
 
             alert("🚀 Minting Token... (This may take a few seconds)");
 
-            try {
-                const transaction = new Transaction().add(
-                    SystemProgram.transfer({
-                        fromPubkey: new PublicKey(walletAddress),
-                        toPubkey: new PublicKey(walletAddress),
-                        lamports: 1000000, // 0.01 SOL
-                    })
-                );
+            const transaction = new Transaction().add(
+                SystemProgram.transfer({
+                    fromPubkey: new PublicKey(walletAddress),
+                    toPubkey: new PublicKey(walletAddress),
+                    lamports: 1000000, // 0.01 SOL
+                })
+            );
 
-                const { signature } = await window.solana.signAndSendTransaction(transaction);
-                await connection.confirmTransaction(signature);
-
-                alert("🎉 Token Minted Successfully! Transaction: " + signature);
-            } catch (err) {
-                console.error("Minting failed", err);
-                alert("❌ Minting failed. Check console for details.");
-            }
+            window.solana.signAndSendTransaction(transaction)
+                .then(({ signature }) => {
+                    return connection.confirmTransaction(signature);
+                })
+                .then(signature => {
+                    alert("🎉 Token Minted Successfully! Transaction: " + signature);
+                })
+                .catch(err => {
+                    console.error("Minting failed", err);
+                    alert("❌ Minting failed. Check console for details.");
+                });
         }
+
+        // Fonksiyonları global scope'a ekliyoruz ✅
+        window.connectWallet = connectWallet;
+        window.mintToken = mintToken;
     </script>
     <style>
         body {
