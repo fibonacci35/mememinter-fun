@@ -5,22 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mint Your Meme Coin - MemeMinter.fun</title>
     <script>
-        async function connectWallet() {
-            if (window.solana && window.solana.isPhantom) {
-                try {
-                    const response = await window.solana.request({ method: "connect" });
-                    const walletAddress = response.publicKey.toString();
-                    document.getElementById("wallet-status").innerText = `Connected: ${walletAddress}`;
-                } catch (err) {
+    async function connectWallet() {
+        if (window.solana && window.solana.isPhantom) {
+            try {
+                const response = await window.solana.request({ method: "connect" });
+                const walletAddress = response.publicKey.toString();
+                document.getElementById("wallet-status").innerText = `Connected: ${walletAddress}`;
+            } catch (err) {
+                if (err.message.includes("User rejected the request")) {
+                    alert("❌ Wallet connection was rejected. Please try again and approve the request.");
+                } else {
                     console.error("Wallet connection failed", err);
                 }
-            } else {
-                alert("Please install Phantom Wallet!");
             }
+        } else {
+            alert("❌ Phantom Wallet is not installed. Please install it and try again.");
         }
-        
-        window.connectWallet = connectWallet;
-    </script>
+    }
+
+    // Attach function to the window object
+    window.connectWallet = connectWallet;
+</script>
     <style>
         body {
             font-family: Arial, sans-serif;
