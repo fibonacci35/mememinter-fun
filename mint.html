@@ -8,10 +8,17 @@
         async function connectWallet() {
             if (window.solana && window.solana.isPhantom) {
                 try {
-                    // Use Phantom's built-in function
-                    await window.solana.connect();
-                    const walletAddress = window.solana.publicKey.toString();
-                    document.getElementById("wallet-status").innerText = `Connected: ${walletAddress}`;
+                    // Check if already connected to prevent repeated pop-ups
+                    const existingConnection = await window.solana.connect({ onlyIfTrusted: true });
+                    
+                    if (!existingConnection.publicKey) {
+                        // Open connection only if not already connected
+                        const response = await window.solana.request({ method: "connect" });
+                        const walletAddress = response.publicKey.toString();
+                        document.getElementById("wallet-status").innerText = `Connected: ${walletAddress}`;
+                    } else {
+                        document.getElementById("wallet-status").innerText = `Connected: ${existingConnection.publicKey.toString()}`;
+                    }
                 } catch (err) {
                     if (err.message.includes("User rejected the request")) {
                         alert("❌ Wallet connection was rejected. Please try again.");
@@ -126,4 +133,3 @@
     </div>
 </body>
 </html>
-
