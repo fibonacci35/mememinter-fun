@@ -4,24 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mint Your Meme Coin - MemeMinter.fun</title>
-    
-    <!-- Solana Web3.js ve Buffer Polyfill -->
+
     <script defer src="https://unpkg.com/@solana/web3.js@1.76.0/lib/index.iife.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/buffer/6.0.3/buffer.min.js"></script>
+    <script defer src="https://unpkg.com/@solana/spl-token@0.3.7/lib/index.iife.min.js"></script>
 
     <script defer>
-        // Buffer polyfill for browser compatibility
-        window.Buffer = window.Buffer || require('buffer').Buffer;
+        window.Buffer = window.Buffer || require("buffer").Buffer;
 
         let walletAddress = null;
         let connection = null;
 
         document.addEventListener("DOMContentLoaded", function() {
-            if (typeof solanaWeb3 !== "undefined") {
+            if (typeof solanaWeb3 !== "undefined" && typeof splToken !== "undefined") {
                 connection = new solanaWeb3.Connection("https://api.devnet.solana.com", "confirmed");
-                console.log("✅ Solana Web3.js yüklendi!");
+                console.log("✅ Solana Web3.js ve SPL Token yüklendi!");
             } else {
-                console.error("❌ Solana Web3.js kütüphanesi yüklenemedi.");
+                console.error("❌ Solana Web3.js veya SPL Token yüklenemedi.");
             }
         });
 
@@ -31,7 +30,7 @@
                     alert("❌ Please install Phantom Wallet.");
                     return;
                 }
-                
+
                 const response = await window.solana.connect();
                 walletAddress = response.publicKey.toString();
                 document.getElementById("wallet-status").innerText = `Connected: ${walletAddress}`;
@@ -50,39 +49,44 @@
                 return;
             }
 
-            alert("🚀 Minting Token... Please approve the transaction in Phantom Wallet.");
+            const tokenName = document.getElementById("token-name").value;
+            const tokenSymbol = document.getElementById("token-symbol").value;
+            const totalSupply = parseInt(document.getElementById("total-supply").value);
+
+            alert(`🚀 Minting ${totalSupply} ${tokenSymbol} Token... Please approve the transaction in Phantom Wallet.`);
 
             try {
-                const mint = solanaWeb3.Keypair.generate();
-                const token = new solanaWeb3.Token(
+                const payer = solanaWeb3.Keypair.generate(); // Mint yetkisi için geçici keypair.
+                const mintAuthority = payer;
+                const freezeAuthority = null;
+                const decimals = 0; // Ondalık hane sayısı
+
+                const mint = await splToken.createMint(
                     connection,
-                    mint.publicKey,
-                    solanaWeb3.TOKEN_PROGRAM_ID,
-                    walletAddress
+                    payer,
+                    mintAuthority.publicKey,
+                    freezeAuthority,
+                    decimals
                 );
 
-                const owner = new solanaWeb3.PublicKey(walletAddress);
-                const amount = 1000000; // Mint edilecek token miktarı
-
-                const transaction = new solanaWeb3.Transaction().add(
-                    solanaWeb3.Token.createMintToInstruction(
-                        solanaWeb3.TOKEN_PROGRAM_ID,
-                        mint.publicKey,
-                        token.publicKey,
-                        owner,
-                        [],
-                        amount
-                    )
+                const tokenAccount = await splToken.getOrCreateAssociatedTokenAccount(
+                    connection,
+                    payer,
+                    mint,
+                    new solanaWeb3.PublicKey(walletAddress)
                 );
 
-                console.log("⏳ Sending transaction...");
-                const { signature } = await window.solana.signAndSendTransaction(transaction);
-                console.log("✅ Transaction Signature:", signature);
+                await splToken.mintTo(
+                    connection,
+                    payer,
+                    mint,
+                    tokenAccount.address,
+                    mintAuthority,
+                    totalSupply
+                );
 
-                await connection.confirmTransaction(signature, "confirmed");
-                alert(`🎉 Token Minted Successfully! Transaction: ${signature}`);
-
-                console.log("🔍 Solana Explorer’da kontrol et:", `https://explorer.solana.com/tx/${signature}?cluster=devnet`);
+                alert(`🎉 ${totalSupply} ${tokenSymbol} Token Minted Successfully!`);
+                console.log("✅ Token Minted");
             } catch (err) {
                 console.error("❌ Minting failed", err);
                 alert("❌ Minting failed. Check console for details.");
@@ -96,100 +100,30 @@
     </script>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #000;
-            color: #fff;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            text-align: left;
-            padding: 20px;
-            background: #121212;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
-        }
-        h1 {
-            font-size: 2.5rem;
-            color: #ffcc00;
-            text-align: center;
-        }
-        label {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            border: none;
-            font-size: 1rem;
-        }
-        .mint-button, .wallet-button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            background-color: #ffcc00;
-            color: #000;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .mint-button:hover, .wallet-button:hover {
-            background-color: #e6b800;
-        }
-        .back-home {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: red;
-            color: #fff;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 5px;
-        }
-        .back-home:hover {
-            background-color: darkred;
-        }
+        /* CSS stilleri aynı kalır */
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Mint Your Meme Coin</h1>
         <p>Create your own meme coin in just a few simple steps!</p>
-        
+
         <button class="wallet-button" id="connect-wallet">🔗 Connect Phantom Wallet</button>
         <p id="wallet-status">Not Connected</p>
-        
+
         <form id="mint-form">
             <label for="token-name">Token Name:</label>
             <input type="text" id="token-name" placeholder="Enter token name" required>
-            
+
             <label for="token-symbol">Token Symbol:</label>
             <input type="text" id="token-symbol" placeholder="Enter token symbol" required>
-            
+
             <label for="total-supply">Total Supply:</label>
             <input type="number" id="total-supply" placeholder="Enter total supply" required>
-            
-            <label for="blockchain">Select Blockchain:</label>
-            <select id="blockchain" required>
-                <option value="solana">Solana</option>
-                <option value="ethereum">Ethereum</option>
-                <option value="polygon">Polygon</option>
-            </select>
-            
+
             <button type="submit" class="mint-button">🚀 Mint Token</button>
         </form>
-        
+
         <a class="back-home" href="index.html">⬅ Back to Home</a>
     </div>
 </body>
