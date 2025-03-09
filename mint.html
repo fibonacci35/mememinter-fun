@@ -10,8 +10,8 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/buffer/6.0.3/buffer.min.js"></script>
 
     <script defer>
-        // Buffer polyfill tarayıcı uyumu için
-        window.Buffer = window.Buffer || require("buffer").Buffer;
+        // Buffer polyfill for browser compatibility
+        window.Buffer = window.Buffer || buffer.Buffer;
 
         let walletAddress = null;
         let connection = null;
