@@ -87,10 +87,10 @@
         <h2>Step 5: Trade & Grow Your Coin</h2>
         <p>After minting, you can list your token on decentralized exchanges (DEXs) and build your community.</p>
 
-        <a class="button" href="#">🚀 Mint Your Meme Coin</a>
+        <!-- Eğer token mintleme sayfası varsa, href="mint.html" olarak değiştir -->
+        <a class="button" href="mint.html">🚀 Mint Your Meme Coin</a>
         <br>
         <a class="back-home" href="index.html">⬅ Back to Home</a>
     </div>
 </body>
 </html>
-
