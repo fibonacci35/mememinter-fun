@@ -10,11 +10,11 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/buffer/6.0.3/buffer.min.js"></script>
 
     <script defer>
-        // Buffer'ı tarayıcı ortamına tanıt
-        window.Buffer = window.Buffer || globalThis.Buffer || require('buffer').Buffer;
+        // Buffer hatasını düzelt
+        window.Buffer = window.Buffer || globalThis.Buffer || new Uint8Array();
 
         let walletAddress = null;
-        let connection;
+        let connection = null;
 
         document.addEventListener("DOMContentLoaded", function() {
             if (typeof solanaWeb3 !== "undefined") {
@@ -25,19 +25,20 @@
             }
         });
 
-        function connectWallet() {
-            if (window.solana && window.solana.isPhantom) {
-                window.solana.connect()
-                    .then(response => {
-                        walletAddress = response.publicKey.toString();
-                        document.getElementById("wallet-status").innerText = `Connected: ${walletAddress}`;
-                    })
-                    .catch(err => {
-                        alert("❌ Wallet connection failed. Check console for details.");
-                        console.error("Wallet connection failed", err);
-                    });
-            } else {
-                alert("❌ Please install Phantom Wallet.");
+        async function connectWallet() {
+            try {
+                if (!window.solana || !window.solana.isPhantom) {
+                    alert("❌ Please install Phantom Wallet.");
+                    return;
+                }
+                
+                const response = await window.solana.connect();
+                walletAddress = response.publicKey.toString();
+                document.getElementById("wallet-status").innerText = `Connected: ${walletAddress}`;
+                console.log("✅ Wallet Connected:", walletAddress);
+            } catch (err) {
+                alert("❌ Wallet connection failed. Check console for details.");
+                console.error("Wallet connection failed", err);
             }
         }
 
@@ -63,7 +64,7 @@
                 );
 
                 console.log("⏳ Sending transaction...");
-                const signature = await window.solana.signAndSendTransaction(transaction);
+                const { signature } = await window.solana.signAndSendTransaction(transaction);
                 console.log("✅ Transaction Signature:", signature);
 
                 await connection.confirmTransaction(signature, "confirmed");
@@ -77,8 +78,8 @@
         }
 
         window.onload = function() {
-            window.connectWallet = connectWallet;
-            window.mintToken = mintToken;
+            document.getElementById("connect-wallet").onclick = connectWallet;
+            document.getElementById("mint-form").onsubmit = mintToken;
         };
     </script>
 
@@ -154,10 +155,10 @@
         <h1>Mint Your Meme Coin</h1>
         <p>Create your own meme coin in just a few simple steps!</p>
         
-        <button class="wallet-button" onclick="connectWallet()">🔗 Connect Phantom Wallet</button>
+        <button class="wallet-button" id="connect-wallet">🔗 Connect Phantom Wallet</button>
         <p id="wallet-status">Not Connected</p>
         
-        <form id="mint-form" onsubmit="mintToken(event)">
+        <form id="mint-form">
             <label for="token-name">Token Name:</label>
             <input type="text" id="token-name" placeholder="Enter token name" required>
             
