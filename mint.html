@@ -10,6 +10,7 @@
         let walletAddress = null;
         const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 
+        // Connect Wallet Fonksiyonu
         function connectWallet() {
             if (window.solana && window.solana.isPhantom) {
                 window.solana.connect()
@@ -30,6 +31,7 @@
             }
         }
 
+        // Mint Token Fonksiyonu
         function mintToken(event) {
             event.preventDefault();
 
@@ -61,10 +63,9 @@
                 });
         }
 
-        window.addEventListener("load", () => {
-            window.connectWallet = connectWallet;
-            window.mintToken = mintToken;
-        });
+        // **Fonksiyonları Global Scope'a Ekliyoruz** ✅
+        window.connectWallet = connectWallet;
+        window.mintToken = mintToken;
     </script>
     <style>
         body {
