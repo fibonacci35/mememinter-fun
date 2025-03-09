@@ -7,7 +7,7 @@
     <script type="module">
         import { Connection, PublicKey, Transaction, SystemProgram } from "https://cdn.jsdelivr.net/npm/@solana/web3.js/+esm";
 
-        let walletAddress = null; // Sadece bir kez tanımlandı
+        let walletAddress = null;
         const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 
         window.connectWallet = async function() {
@@ -29,7 +29,9 @@
             }
         }
 
-        window.mintToken = async function(event) {
+        window.connectWallet = connectWallet;
+
+        async function mintToken(event) {
             event.preventDefault();
 
             if (!walletAddress) {
@@ -57,6 +59,11 @@
                 alert("❌ Minting failed. Check console for details.");
             }
         }
+
+        window.mintToken = mintToken;
+
+        let walletAddress = null;
+        const connection = new Connection("https://api.devnet.solana.com", "confirmed");
     </script>
     <style>
         body {
