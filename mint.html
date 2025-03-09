@@ -7,7 +7,7 @@
     <script type="module">
         import { Connection, PublicKey, Transaction, SystemProgram } from "https://cdn.jsdelivr.net/npm/@solana/web3.js/+esm";
 
-        let walletAddress = null;
+        let walletAddress = null; // Değişken sadece bir kez tanımlandı ✅
         const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 
         window.connectWallet = async function() {
@@ -20,7 +20,7 @@
                     if (err.message.includes("User rejected the request")) {
                         alert("❌ Wallet connection was rejected. Please try again.");
                     } else {
-                        alert("❌ Wallet connection failed. See console for details.");
+                        alert("❌ Wallet connection failed. Check console for details.");
                         console.error("Wallet connection failed", err);
                     }
                 }
@@ -29,9 +29,7 @@
             }
         }
 
-        window.connectWallet = connectWallet;
-
-        async function mintToken(event) {
+        window.mintToken = async function(event) {
             event.preventDefault();
 
             if (!walletAddress) {
@@ -59,11 +57,6 @@
                 alert("❌ Minting failed. Check console for details.");
             }
         }
-
-        window.mintToken = mintToken;
-
-        let walletAddress = null;
-        const connection = new Connection("https://api.devnet.solana.com", "confirmed");
     </script>
     <style>
         body {
