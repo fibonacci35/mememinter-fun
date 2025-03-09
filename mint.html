@@ -8,7 +8,7 @@
         async function connectWallet() {
             if (window.solana && window.solana.isPhantom) {
                 try {
-                    const response = await window.solana.connect();
+                    const response = await window.solana.request({ method: "connect" });
                     const walletAddress = response.publicKey.toString();
                     document.getElementById("wallet-status").innerText = `Connected: ${walletAddress}`;
                 } catch (err) {
