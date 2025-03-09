@@ -4,6 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mint Your Meme Coin - MemeMinter.fun</title>
+    <script type="module">
+        import { Connection, PublicKey, clusterApiUrl } from "https://cdn.jsdelivr.net/npm/@solana/web3.js/+esm";
+        import { PhantomWalletAdapter } from "https://cdn.jsdelivr.net/npm/@solana/wallet-adapter-wallets/+esm";
+
+        let wallet = null;
+        let connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+
+        async function connectWallet() {
+            if (window.solana && window.solana.isPhantom) {
+                try {
+                    const response = await window.solana.connect();
+                    wallet = response.publicKey.toString();
+                    document.getElementById("wallet-status").innerText = `Connected: ${wallet}`;
+                } catch (err) {
+                    console.error("Wallet connection failed", err);
+                }
+            } else {
+                alert("Please install Phantom Wallet!");
+            }
+        }
+        window.connectWallet = connectWallet;
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,10 +62,11 @@
             border: none;
             font-size: 1rem;
         }
-        .mint-button {
+        .mint-button, .wallet-button {
             display: block;
             width: 100%;
             padding: 10px;
+            margin-top: 10px;
             background-color: #ffcc00;
             color: #000;
             font-size: 1.2rem;
@@ -52,7 +75,7 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        .mint-button:hover {
+        .mint-button:hover, .wallet-button:hover {
             background-color: #e6b800;
         }
         .back-home {
@@ -74,6 +97,9 @@
     <div class="container">
         <h1>Mint Your Meme Coin</h1>
         <p>Create your own meme coin in just a few simple steps!</p>
+        
+        <button class="wallet-button" onclick="connectWallet()">🔗 Connect Phantom Wallet</button>
+        <p id="wallet-status">Not Connected</p>
         
         <form id="mint-form">
             <label for="token-name">Token Name:</label>
