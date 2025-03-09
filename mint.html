@@ -10,8 +10,11 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/buffer/6.0.3/buffer.min.js"></script>
 
     <script defer>
-        // Buffer hatasını düzelt
-        window.Buffer = window.Buffer || globalThis.Buffer || new Uint8Array();
+        // Tarayıcı uyumlu Buffer tanımlaması
+        window.Buffer = window.Buffer || {
+            from: (data) => new Uint8Array(data),
+            alloc: (size) => new Uint8Array(size)
+        };
 
         let walletAddress = null;
         let connection = null;
