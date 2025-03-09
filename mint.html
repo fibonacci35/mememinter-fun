@@ -11,7 +11,7 @@
 
     <script defer>
         // Buffer polyfill for browser compatibility
-        window.Buffer = window.Buffer || Buffer;
+        window.Buffer = window.Buffer || new Uint8Array();
 
         let walletAddress = null;
         let connection = null;
@@ -53,26 +53,14 @@
             alert("🚀 Minting Token... Please approve the transaction in Phantom Wallet.");
 
             try {
-                const mint = solanaWeb3.Keypair.generate();
-                const token = new solanaWeb3.Token(
-                    connection,
-                    mint.publicKey,
-                    solanaWeb3.TOKEN_PROGRAM_ID,
-                    walletAddress
-                );
-
-                const owner = new solanaWeb3.PublicKey(walletAddress);
-                const amount = 1000000; // Mint edilecek token miktarı
+                const lamports = BigInt(1000000); // 0.01 SOL (Test için)
 
                 const transaction = new solanaWeb3.Transaction().add(
-                    solanaWeb3.Token.createMintToInstruction(
-                        solanaWeb3.TOKEN_PROGRAM_ID,
-                        mint.publicKey,
-                        token.publicKey,
-                        owner,
-                        [],
-                        amount
-                    )
+                    solanaWeb3.SystemProgram.transfer({
+                        fromPubkey: new solanaWeb3.PublicKey(walletAddress),
+                        toPubkey: new solanaWeb3.PublicKey(walletAddress),
+                        lamports: lamports, 
+                    })
                 );
 
                 console.log("⏳ Sending transaction...");
