@@ -11,7 +11,7 @@
 
     <script defer>
         // Buffer'ı tarayıcı ortamına tanıt
-        window.Buffer = window.Buffer || globalThis.Buffer || buffer.Buffer;
+        window.Buffer = window.Buffer || globalThis.Buffer || require('buffer').Buffer;
 
         let walletAddress = null;
         let connection;
