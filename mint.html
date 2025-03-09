@@ -10,7 +10,7 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/buffer/6.0.3/buffer.min.js"></script>
 
     <script defer>
-        window.Buffer = window.Buffer || buffer.Buffer; // Buffer'ı tanımla
+        window.Buffer = window.Buffer || require("buffer").Buffer; // Buffer nesnesini tanımla
 
         let walletAddress = null;
         let connection;
