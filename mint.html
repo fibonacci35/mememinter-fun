@@ -4,21 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mint Your Meme Coin - MemeMinter.fun</title>
-    <script>
+    <script type="module">
+        import { Connection, PublicKey, Transaction, SystemProgram, sendAndConfirmTransaction } from "https://cdn.jsdelivr.net/npm/@solana/web3.js/+esm";
+
+        let walletAddress = null;
+        const connection = new Connection("https://api.devnet.solana.com", "confirmed");
+
         async function connectWallet() {
             if (window.solana && window.solana.isPhantom) {
                 try {
-                    // Check if already connected to prevent repeated pop-ups
-                    const existingConnection = await window.solana.connect({ onlyIfTrusted: true });
-                    
-                    if (!existingConnection.publicKey) {
-                        // Open connection only if not already connected
-                        const response = await window.solana.request({ method: "connect" });
-                        const walletAddress = response.publicKey.toString();
-                        document.getElementById("wallet-status").innerText = `Connected: ${walletAddress}`;
-                    } else {
-                        document.getElementById("wallet-status").innerText = `Connected: ${existingConnection.publicKey.toString()}`;
-                    }
+                    const response = await window.solana.request({ method: "connect" });
+                    walletAddress = response.publicKey.toString();
+                    document.getElementById("wallet-status").innerText = `Connected: ${walletAddress}`;
                 } catch (err) {
                     if (err.message.includes("User rejected the request")) {
                         alert("❌ Wallet connection was rejected. Please try again.");
@@ -31,8 +28,39 @@
             }
         }
 
-        // Attach function to the window object
+        async function mintToken(event) {
+            event.preventDefault();
+            
+            if (!walletAddress) {
+                alert("❌ Please connect your Phantom Wallet first!");
+                return;
+            }
+
+            alert("🚀 Minting Token... (This may take a few seconds)");
+
+            try {
+                // Example: Send 0.01 SOL to test the transaction (replace with mint logic)
+                const transaction = new Transaction().add(
+                    SystemProgram.transfer({
+                        fromPubkey: new PublicKey(walletAddress),
+                        toPubkey: new PublicKey(walletAddress), // Sending to itself for now
+                        lamports: 1000000, // 0.01 SOL
+                    })
+                );
+
+                const signature = await window.solana.signAndSendTransaction(transaction);
+                await connection.confirmTransaction(signature);
+
+                alert("🎉 Token Minted Successfully! Transaction: " + signature);
+            } catch (err) {
+                console.error("Minting failed", err);
+                alert("❌ Minting failed. Check console for details.");
+            }
+        }
+
+        // Attach functions to window
         window.connectWallet = connectWallet;
+        window.mintToken = mintToken;
     </script>
     <style>
         body {
@@ -109,7 +137,7 @@
         <button class="wallet-button" onclick="connectWallet()">🔗 Connect Phantom Wallet</button>
         <p id="wallet-status">Not Connected</p>
         
-        <form id="mint-form">
+        <form id="mint-form" onsubmit="mintToken(event)">
             <label for="token-name">Token Name:</label>
             <input type="text" id="token-name" placeholder="Enter token name" required>
             
@@ -133,3 +161,4 @@
     </div>
 </body>
 </html>
+
