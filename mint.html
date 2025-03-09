@@ -8,16 +8,18 @@
     async function connectWallet() {
         if (window.solana && window.solana.isPhantom) {
             try {
-                // Open Phantom Wallet in a smaller pop-up window
-                const popup = window.open("https://phantom.app/", "_blank", "width=400,height=600");
+                // Check if the wallet is already connected to prevent opening full-screen
+                const existingConnection = await window.solana.connect({ onlyIfTrusted: true });
 
-                // Wait for user interaction
-                setTimeout(async () => {
+                if (!existingConnection.publicKey) {
+                    // If no existing connection, open the normal connect request
                     const response = await window.solana.request({ method: "connect" });
                     const walletAddress = response.publicKey.toString();
                     document.getElementById("wallet-status").innerText = `Connected: ${walletAddress}`;
-                    popup.close(); // Close the pop-up after connection
-                }, 2000); // Delay to allow Phantom Wallet interaction
+                } else {
+                    // If already connected, just display the wallet address
+                    document.getElementById("wallet-status").innerText = `Connected: ${existingConnection.publicKey.toString()}`;
+                }
 
             } catch (err) {
                 if (err.message.includes("User rejected the request")) {
