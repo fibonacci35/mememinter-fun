@@ -5,14 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mint Your Meme Coin - MemeMinter.fun</title>
     
-    <!-- Solana Web3.js ve Buffer Polyfill -->
+    <!-- Solana Web3.js -->
     <script defer src="https://unpkg.com/@solana/web3.js@1.76.0/lib/index.iife.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/buffer/6.0.3/buffer.min.js"></script>
 
     <script defer>
-        // Buffer polyfill for browser compatibility
-        window.Buffer = window.Buffer || new Uint8Array();
-
         let walletAddress = null;
         let connection = null;
 
