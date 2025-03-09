@@ -6,10 +6,6 @@
     <title>Mint Your Meme Coin - MemeMinter.fun</title>
     <script defer src="https://unpkg.com/@solana/web3.js@1.76.0/lib/index.iife.min.js"></script>
     <script defer>
-        window.Buffer = window.Buffer || {
-            from: (str, encoding) => new TextEncoder().encode(str)
-        };
-
         let walletAddress = null;
         let connection;
 
@@ -49,16 +45,18 @@
             alert("🚀 Minting Token... Please approve the transaction in Phantom Wallet.");
 
             try {
+                const lamports = Number(1000000); // 0.01 SOL (Test için)
+
                 const transaction = new solanaWeb3.Transaction().add(
                     solanaWeb3.SystemProgram.transfer({
                         fromPubkey: new solanaWeb3.PublicKey(walletAddress),
                         toPubkey: new solanaWeb3.PublicKey(walletAddress),
-                        lamports: 1000000, // 0.01 SOL (Test için)
+                        lamports: lamports, 
                     })
                 );
 
                 console.log("⏳ Sending transaction...");
-                const signature = await window.solana.signAndSendTransaction(transaction);
+                const { signature } = await window.solana.signAndSendTransaction(transaction);
                 console.log("✅ Transaction Signature:", signature);
 
                 await connection.confirmTransaction(signature, "confirmed");
