@@ -5,37 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mint Your Meme Coin - MemeMinter.fun</title>
     <script>
-    async function connectWallet() {
-        if (window.solana && window.solana.isPhantom) {
-            try {
-                // Check if the wallet is already connected to prevent opening full-screen
-                const existingConnection = await window.solana.connect({ onlyIfTrusted: true });
-
-                if (!existingConnection.publicKey) {
-                    // If no existing connection, open the normal connect request
-                    const response = await window.solana.request({ method: "connect" });
-                    const walletAddress = response.publicKey.toString();
+        async function connectWallet() {
+            if (window.solana && window.solana.isPhantom) {
+                try {
+                    // Use Phantom's built-in function
+                    await window.solana.connect();
+                    const walletAddress = window.solana.publicKey.toString();
                     document.getElementById("wallet-status").innerText = `Connected: ${walletAddress}`;
-                } else {
-                    // If already connected, just display the wallet address
-                    document.getElementById("wallet-status").innerText = `Connected: ${existingConnection.publicKey.toString()}`;
+                } catch (err) {
+                    if (err.message.includes("User rejected the request")) {
+                        alert("❌ Wallet connection was rejected. Please try again.");
+                    } else {
+                        console.error("Wallet connection failed", err);
+                    }
                 }
-
-            } catch (err) {
-                if (err.message.includes("User rejected the request")) {
-                    alert("❌ Wallet connection was rejected. Please try again and approve the request.");
-                } else {
-                    console.error("Wallet connection failed", err);
-                }
+            } else {
+                alert("❌ Please install Phantom Wallet.");
             }
-        } else {
-            alert("❌ Phantom Wallet is not installed. Please install it and try again.");
         }
-    }
 
-    // Attach function to the window object
-    window.connectWallet = connectWallet;
-</script>
+        // Attach function to the window object
+        window.connectWallet = connectWallet;
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
