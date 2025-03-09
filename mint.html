@@ -4,44 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mint Your Meme Coin - MemeMinter.fun</title>
-    <script>
-        let walletAddress = null;
+    <script type="module">
+    import { Connection, PublicKey, Transaction, SystemProgram } from "https://cdn.jsdelivr.net/npm/@solana/web3.js/+esm";
 
-        async function connectWallet() {
-            if (window.solana && window.solana.isPhantom) {
-                try {
-                    const response = await window.solana.connect();
+    let walletAddress = null;
+    const connection = new Connection("https://api.devnet.solana.com", "confirmed");
+
+    function connectWallet() {
+        if (window.solana && window.solana.isPhantom) {
+            window.solana.connect()
+                .then(response => {
                     walletAddress = response.publicKey.toString();
                     document.getElementById("wallet-status").innerText = `Connected: ${walletAddress}`;
-                } catch (err) {
-                    if (err.message.includes("User rejected the request")) {
-                        alert("❌ Wallet connection was rejected. Please try again.");
-                    } else {
-                        alert("❌ Wallet connection failed. Check console for details.");
-                        console.error("Wallet connection failed", err);
-                    }
-                }
-            } else {
-                alert("❌ Please install Phantom Wallet.");
-            }
+                })
+                .catch(err => {
+                    alert("❌ Wallet connection failed. Check console for details.");
+                    console.error("Wallet connection failed", err);
+                });
+        } else {
+            alert("❌ Please install Phantom Wallet.");
+        }
+    }
+
+    async function mintToken(event) {
+        event.preventDefault();
+
+        if (!walletAddress) {
+            alert("❌ Please connect your Phantom Wallet first!");
+            return;
         }
 
-        async function mintToken(event) {
-            event.preventDefault();
+        alert("🚀 Minting Token... Please approve the transaction in Phantom Wallet.");
 
-            if (!walletAddress) {
-                alert("❌ Please connect your Phantom Wallet first!");
-                return;
-            }
+        try {
+            const transaction = new Transaction().add(
+                SystemProgram.transfer({
+                    fromPubkey: new PublicKey(walletAddress),
+                    toPubkey: new PublicKey(walletAddress),
+                    lamports: 1000000, // 0.01 SOL (Test için)
+                })
+            );
 
-            alert("🚀 Minting Token... (This may take a few seconds)");
+            const { signature } = await window.solana.signAndSendTransaction(transaction);
+            await connection.confirmTransaction(signature, "confirmed");
+
+            alert(`🎉 Token Minted Successfully! Transaction: ${signature}`);
+            console.log("Transaction Signature:", signature);
+        } catch (err) {
+            console.error("Minting failed", err);
+            alert("❌ Minting failed. Check console for details.");
         }
+    }
 
-        window.onload = function() {
-            window.connectWallet = connectWallet;
-            window.mintToken = mintToken;
-        };
-    </script>
+    window.connectWallet = connectWallet;
+    window.mintToken = mintToken;
+</script>
     <style>
         body {
             font-family: Arial, sans-serif;
