@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mint Your Meme Coin - MemeMinter.fun</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/solana-web3.js/1.76.0/solanaWeb3.min.js"></script>
-    <script>
+    <script type="module">
+        import { Connection, PublicKey, Transaction, SystemProgram } from "https://cdn.jsdelivr.net/npm/@solana/web3.js@1.76.0/+esm";
+
         let walletAddress = null;
-        const connection = new solanaWeb3.Connection("https://api.devnet.solana.com", "confirmed");
+        const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 
         function connectWallet() {
             if (window.solana && window.solana.isPhantom) {
@@ -36,10 +37,10 @@
             alert("🚀 Minting Token... Please approve the transaction in Phantom Wallet.");
 
             try {
-                const transaction = new solanaWeb3.Transaction().add(
-                    solanaWeb3.SystemProgram.transfer({
-                        fromPubkey: new solanaWeb3.PublicKey(walletAddress),
-                        toPubkey: new solanaWeb3.PublicKey(walletAddress),
+                const transaction = new Transaction().add(
+                    SystemProgram.transfer({
+                        fromPubkey: new PublicKey(walletAddress),
+                        toPubkey: new PublicKey(walletAddress),
                         lamports: 1000000, // 0.01 SOL (Test için)
                     })
                 );
