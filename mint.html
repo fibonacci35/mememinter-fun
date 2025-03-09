@@ -7,7 +7,7 @@
     <script type="module">
         import { Connection, PublicKey, Transaction, SystemProgram } from "https://cdn.jsdelivr.net/npm/@solana/web3.js/+esm";
 
-        let walletAddress = null; // Değişken sadece bir kez tanımlandı ✅
+        let walletAddress = null;
         const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 
         function connectWallet() {
@@ -61,9 +61,10 @@
                 });
         }
 
-        // Fonksiyonları global scope'a ekliyoruz ✅
-        window.connectWallet = connectWallet;
-        window.mintToken = mintToken;
+        window.addEventListener("load", () => {
+            window.connectWallet = connectWallet;
+            window.mintToken = mintToken;
+        });
     </script>
     <style>
         body {
