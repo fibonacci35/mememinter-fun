@@ -4,10 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mint Your Meme Coin - MemeMinter.fun</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/solana-web3.js/1.76.0/solanaWeb3.umd.min.js"></script>
-    <script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/solana-web3.js/1.76.0/solanaWeb3.min.js" defer></script>
+    <script defer>
         let walletAddress = null;
-        const connection = new solanaWeb3.Connection("https://api.devnet.solana.com", "confirmed");
+        let connection;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            if (typeof solanaWeb3 !== "undefined") {
+                connection = new solanaWeb3.Connection("https://api.devnet.solana.com", "confirmed");
+            } else {
+                console.error("❌ Solana Web3.js kütüphanesi yüklenemedi.");
+            }
+        });
 
         function connectWallet() {
             if (window.solana && window.solana.isPhantom) {
@@ -36,10 +44,10 @@
             alert("🚀 Minting Token... Please approve the transaction in Phantom Wallet.");
 
             try {
-                const transaction = new solanaWeb3.Transaction().add(
-                    solanaWeb3.SystemProgram.transfer({
-                        fromPubkey: new solanaWeb3.PublicKey(walletAddress),
-                        toPubkey: new solanaWeb3.PublicKey(walletAddress),
+                const transaction = new window.solanaWeb3.Transaction().add(
+                    window.solanaWeb3.SystemProgram.transfer({
+                        fromPubkey: new window.solanaWeb3.PublicKey(walletAddress),
+                        toPubkey: new window.solanaWeb3.PublicKey(walletAddress),
                         lamports: 1000000, // 0.01 SOL (Test için)
                     })
                 );
@@ -58,10 +66,8 @@
             }
         }
 
-        window.onload = function() {
-            window.connectWallet = connectWallet;
-            window.mintToken = mintToken;
-        };
+        window.connectWallet = connectWallet;
+        window.mintToken = mintToken;
     </script>
     <style>
         body {
