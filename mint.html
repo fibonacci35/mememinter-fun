@@ -7,15 +7,8 @@
     
     <!-- Solana Web3.js ve Buffer Polyfill -->
     <script defer src="https://unpkg.com/@solana/web3.js@1.76.0/lib/index.iife.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/buffer/6.0.3/buffer.min.js"></script>
 
     <script defer>
-        // Tarayıcı uyumlu Buffer tanımlaması
-        window.Buffer = window.Buffer || {
-            from: (data) => new Uint8Array(data),
-            alloc: (size) => new Uint8Array(size)
-        };
-
         let walletAddress = null;
         let connection = null;
 
@@ -57,12 +50,15 @@
 
             try {
                 const lamports = 1000000; // 0.01 SOL (Test için)
+                
+                // Lamports'u doğru formatta `Uint8Array` olarak çevir
+                const lamportsBuffer = new Uint8Array(new BigUint64Array([BigInt(lamports)]).buffer);
 
                 const transaction = new solanaWeb3.Transaction().add(
                     solanaWeb3.SystemProgram.transfer({
                         fromPubkey: new solanaWeb3.PublicKey(walletAddress),
                         toPubkey: new solanaWeb3.PublicKey(walletAddress),
-                        lamports: lamports, 
+                        lamports: lamportsBuffer, 
                     })
                 );
 
