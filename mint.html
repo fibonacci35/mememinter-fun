@@ -49,13 +49,13 @@
             alert("🚀 Minting Token... Please approve the transaction in Phantom Wallet.");
 
             try {
-                const lamports = new Uint8Array(new BigInt64Array([1000000n]).buffer); // 0.01 SOL (Test için)
+                const lamports = BigInt(1000000); // 0.01 SOL (Test için)
 
                 const transaction = new solanaWeb3.Transaction().add(
                     solanaWeb3.SystemProgram.transfer({
                         fromPubkey: new solanaWeb3.PublicKey(walletAddress),
                         toPubkey: new solanaWeb3.PublicKey(walletAddress),
-                        lamports: Number(1000000), 
+                        lamports: Number(lamports), 
                     })
                 );
 
