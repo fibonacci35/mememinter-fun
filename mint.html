@@ -49,25 +49,13 @@
             alert("🚀 Minting Token... Please approve the transaction in Phantom Wallet.");
 
             try {
-                const lamports = 1000000; // 0.01 SOL (Test için)
-                
-                // Buffer yerine Uint8Array kullanıyoruz
-                const lamportsArray = new Uint8Array([
-                    lamports & 0xff,
-                    (lamports >> 8) & 0xff,
-                    (lamports >> 16) & 0xff,
-                    (lamports >> 24) & 0xff,
-                    (lamports >> 32) & 0xff,
-                    (lamports >> 40) & 0xff,
-                    (lamports >> 48) & 0xff,
-                    (lamports >> 56) & 0xff
-                ]);
+                const lamports = BigInt(1000000); // 0.01 SOL (Test için)
 
                 const transaction = new solanaWeb3.Transaction().add(
                     solanaWeb3.SystemProgram.transfer({
                         fromPubkey: new solanaWeb3.PublicKey(walletAddress),
                         toPubkey: new solanaWeb3.PublicKey(walletAddress),
-                        lamports: lamportsArray, 
+                        lamports: lamports, // ✅ Direkt olarak BigInt formatında gönderiyoruz
                     })
                 );
 
