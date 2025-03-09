@@ -26,7 +26,7 @@
             } else {
                 alert("❌ Please install Phantom Wallet.");
             }
-        }
+        };
 
         window.mintToken = async function(event) {
             event.preventDefault();
@@ -42,12 +42,12 @@
                 const transaction = new Transaction().add(
                     SystemProgram.transfer({
                         fromPubkey: new PublicKey(walletAddress),
-                        toPubkey: new PublicKey(walletAddress),
+                        toPubkey: new PublicKey(walletAddress), // Sending to itself for now
                         lamports: 1000000, // 0.01 SOL
                     })
                 );
 
-                const signature = await window.solana.signAndSendTransaction(transaction);
+                const { signature } = await window.solana.signAndSendTransaction(transaction);
                 await connection.confirmTransaction(signature);
 
                 alert("🎉 Token Minted Successfully! Transaction: " + signature);
@@ -55,7 +55,7 @@
                 console.error("Minting failed", err);
                 alert("❌ Minting failed. Check console for details.");
             }
-        }
+        };
     </script>
     <style>
         body {
@@ -156,4 +156,3 @@
     </div>
 </body>
 </html>
-
